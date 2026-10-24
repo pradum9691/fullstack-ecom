@@ -3,12 +3,17 @@ import { store } from ".././store/store";
 import { logoutSuccess } from "../store/slices/authSlice";
 import { clearWishlist } from "../store/slices/wishlistSlice";
 
+const rawBaseURL = import.meta.env.VITE_API_URL || "https://fullstack-ecom-pro.onrender.com";
+const cleanBaseURL = (rawBaseURL && !rawBaseURL.includes("fullstack-pro-fq92"))
+  ? rawBaseURL.replace(/\/+$/, "")
+  : "https://fullstack-ecom-pro.onrender.com";
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: cleanBaseURL.endsWith("/api") ? cleanBaseURL : `${cleanBaseURL}/api`,
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");;
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

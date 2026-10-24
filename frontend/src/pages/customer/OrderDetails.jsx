@@ -175,7 +175,7 @@ const OrderDetails = () => {
             <button
               onClick={() => {
                 window.open(
-                  `${import.meta.env.VITE_API_URL}/orders/my/${order._id}/invoice?token=${localStorage.getItem("token")}`,
+                  `${(import.meta.env.VITE_API_URL && !import.meta.env.VITE_API_URL.includes("fullstack-pro-fq92") ? import.meta.env.VITE_API_URL.replace(/\/+$/, "") : "https://fullstack-ecom-pro.onrender.com")}/api/orders/my/${order._id}/invoice?token=${localStorage.getItem("token")}`,
                   "_blank",
                 );
               }}

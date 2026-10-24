@@ -41,17 +41,17 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: `${process.env.FRONTEND_URL || "https://fullstack-ecom-one.vercel.app"}/login`,
+    failureRedirect: `${process.env.FRONTEND_URL || "https://fullstack-pro-plum.vercel.app"}/login`,
   }),
   (req, res) => {
     if (!req.user) {
-      return res.redirect(`${process.env.FRONTEND_URL || "https://fullstack-ecom-one.vercel.app"}/login`);
+      return res.redirect(`${process.env.FRONTEND_URL || "https://fullstack-pro-plum.vercel.app"}/login`);
     }
 
     const { token, user } = req.user;
 
     res.redirect(
-      `${process.env.FRONTEND_URL || "https://fullstack-ecom-one.vercel.app"}/google-success?token=${token}&user=${encodeURIComponent(
+      `${process.env.FRONTEND_URL || "https://fullstack-pro-plum.vercel.app"}/google-success?token=${token}&user=${encodeURIComponent(
         JSON.stringify(user),
       )}`,
     );
