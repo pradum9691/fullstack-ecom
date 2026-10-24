@@ -1,11 +1,47 @@
 import { useNavigate } from "react-router-dom";
-import { products } from "../../data/products";
 import { motion } from "framer-motion";
-import { ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowRight, TrendingUp, Package } from "lucide-react";
+import { useEffect, useState } from "react";
+import api from "../../utils/api";
 
 const FeaturedSection = () => {
   const navigate = useNavigate();
-  const featured = products.slice(0, 4);
+  const [featured, setFeatured] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get("/products")
+      .then((res) => {
+        const data = res.data.data || [];
+        setFeatured(data.slice(0, 4));
+      })
+      .catch(() => setFeatured([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 sm:py-24 bg-[#050505] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="h-8 w-48 bg-white/5 animate-pulse rounded-xl mb-12" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="rounded-2xl overflow-hidden bg-white/[0.03] border border-white/[0.06] animate-pulse">
+                <div className="aspect-[4/5] bg-white/5" />
+                <div className="p-4 space-y-2">
+                  <div className="h-3 w-3/4 bg-white/5 rounded" />
+                  <div className="h-4 w-1/3 bg-white/5 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (featured.length === 0) return null;
 
   return (
     <section className="py-20 sm:py-24 bg-[#050505] relative overflow-hidden">
@@ -51,12 +87,12 @@ const FeaturedSection = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {featured.map((p, i) => (
             <motion.div
-              key={p.id}
+              key={p._id}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              onClick={() => navigate("/products")}
+              onClick={() => navigate(`/product/${p._id}`)}
               className="group cursor-pointer"
             >
               <div className="relative bg-[#111] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-white/[0.14] transition-all duration-300 hover:-translate-y-1">
@@ -64,16 +100,20 @@ const FeaturedSection = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/8 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
 
                 {/* Image */}
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <img
-                    src={p.image}
-                    loading="lazy"
-                    alt={p.name}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-108"
-                    style={{ transform: "scale(1)" }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.08)"}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-                  />
+                <div className="relative aspect-[4/5] overflow-hidden bg-white/[0.03]">
+                  {p.images?.[0] ? (
+                    <img
+                      src={p.images[0]}
+                      loading="lazy"
+                      alt={p.name}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white/20">
+                      <Package size={32} className="mb-2" />
+                      <span className="text-xs">No Image</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   {/* Quick shop badge on hover */}
@@ -87,7 +127,7 @@ const FeaturedSection = () => {
                 {/* Info */}
                 <div className="p-4 relative z-10">
                   <h3 className="font-semibold text-sm text-white/80 truncate group-hover:text-white transition-colors">{p.name}</h3>
-                  <p className="mt-1.5 text-sm font-bold text-white">₹{p.price}</p>
+                  <p className="mt-1.5 text-sm font-bold text-white">₹{p.price?.toLocaleString("en-IN")}</p>
                 </div>
               </div>
             </motion.div>

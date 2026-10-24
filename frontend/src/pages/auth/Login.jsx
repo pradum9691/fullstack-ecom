@@ -109,7 +109,7 @@ const Login = () => {
             variant="outline"
             fullWidth
             onClick={() =>
-              (window.location.href = "https://fullstack-pro-fq92.onrender.com/api/auth/google")
+              (window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`)
             }
           >
             <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
