@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "https://fullstack-pro-fq92.onrender.com/api",
+  baseURL: "https://fullstack-ecom-pro.onrender.com/api",
   withCredentials: true,  
 });
 
