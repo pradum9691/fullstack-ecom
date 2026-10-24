@@ -77,6 +77,21 @@ app.get("/", (req, res) => {
   res.send("Backend is running successfully 🚀");
 });
 
+// 🔍 Temporary debug route - check env vars on Render
+app.get("/debug-env", (req, res) => {
+  res.json({
+    NODE_ENV: process.env.NODE_ENV,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? "✅ SET (" + process.env.GOOGLE_CLIENT_ID.slice(0, 10) + "...)" : "❌ MISSING",
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? "✅ SET" : "❌ MISSING",
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || "❌ MISSING (will use hardcoded fallback)",
+    FRONTEND_URL: process.env.FRONTEND_URL || "❌ MISSING",
+    MONGO_URI: process.env.MONGO_URI ? "✅ SET" : "❌ MISSING",
+    REDIS_HOST: process.env.REDIS_HOST || "❌ MISSING",
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || "❌ MISSING",
+  });
+});
+
+
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/retailer", retailerRoutes);
